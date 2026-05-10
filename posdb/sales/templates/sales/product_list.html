@@ -1,0 +1,190 @@
+<!-- sales/templates/sales/product_list.html -->
+<!doctype html>
+<html lang="km">
+  <head>
+    <meta charset="UTF-8" />
+    <title>🛒 POS — បញ្ជីផលិតផល</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f5f7fa;
+      }
+      h1 {
+        color: #1a202c;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 24px;
+        margin-top: 30px;
+      }
+      .product-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+      }
+      .product-image-container {
+        width: 100%;
+        height: 220px;
+        background: #f8fafb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .product-info {
+        padding: 18px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .product-card h2 {
+        margin: 0;
+        font-size: 1.3em;
+        color: #1d4ed8;
+      }
+      .product-card h2 a {
+        text-decoration: none;
+        color: #1d4ed8;
+        transition: color 0.2s;
+      }
+      .product-card h2 a:hover {
+        color: #2563eb;
+      }
+      .badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75em;
+        background: #dbeafe;
+        color: #1e40af;
+        font-weight: 600;
+        width: fit-content;
+      }
+      .price {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #059669;
+        margin: 0;
+      }
+      .stock {
+        font-size: 0.85em;
+        color: #64748b;
+      }
+      .low {
+        color: #dc2626;
+        font-weight: 600;
+      }
+      .barcode {
+        font-size: 0.75em;
+        color: #94a3b8;
+        margin-top: auto;
+      }
+      nav {
+        background: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      nav a {
+        margin-right: 20px;
+        color: #1d4ed8;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      nav a:hover {
+        color: #2563eb;
+      }
+      .logout-btn {
+        background: none;
+        border: none;
+        color: #1d4ed8;
+        cursor: pointer;
+        font-weight: 500;
+        padding: 0;
+        font-size: 1em;
+      }
+      .logout-btn:hover {
+        color: #2563eb;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🛒 បញ្ជីផលិតផល</h1>
+    <!-- Add this <nav> block to the top of product_list.html and order_list.html -->
+    <nav>
+      <a href="/sales/products/">Products</a>
+      <a href="/sales/orders/">Orders</a>
+      <a href="/sales/orders/mine/">My Orders</a>
+      <a href="/sales/orders/new/">＋ New Order</a>
+      <a href="/admin/">Admin</a>
+      <span style="float: right">
+        👤 {{ request.user.username }}
+        <form method="post" action="/accounts/logout/" style="display: inline">
+          {% csrf_token %}
+          <button class="logout-btn" type="submit">Log Out</button>
+        </form>
+      </span>
+    </nav>
+
+    <p>{{ products|length }} ផលិតផល active ក្នុងប្រព័ន្ធ</p>
+
+    <div class="product-grid">
+      {% for product in products %}
+      <div class="product-card">
+        <div class="product-image-container">
+          <img
+            class="product-image"
+            src="{{ product.image_url|default:'https://via.placeholder.com/240x220?text=No+Image' }}"
+            alt="{{ product.name }}"
+          />
+        </div>
+        <div class="product-info">
+          <h2>
+            <a href="/sales/products/{{ product.pk }}/">{{ product.name }}</a>
+          </h2>
+          <span class="badge">{{ product.get_category_display }}</span>
+          <div class="price">${{ product.price }}</div>
+          {% if product.stock == 0 %}
+          <div class="low">🚫 អស់ស្តុក</div>
+          {% elif product.stock <= 5 %}
+          <div class="low">⚠️ ស្តុកទាប: {{ product.stock }}</div>
+          {% else %}
+          <div class="stock">ក្នុងស្តុក: {{ product.stock }}</div>
+          {% endif %}
+          {% if product.barcode %}
+          <div class=\"barcode\">Barcode: {{ product.barcode }}</div>
+          {% endif %}
+        </div>
+      </div>
+      {% empty %}
+      <div style=\"text-align: center; color: #888; padding: 60px 20px;\">
+        មិនទាន់មានផលិតផលទេ — បន្ថែមតាម <a href=\"/admin/\">ផ្ទាំង admin</a>!
+      </div>
+      {% endfor %}
+    </div>
+  </body>
+</html>

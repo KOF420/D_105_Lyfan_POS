@@ -1,0 +1,118 @@
+<!-- sales/templates/sales/product_detail.html -->
+<!doctype html>
+<html lang="km">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Product details — {{ product.name }}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+        background: #f0f4f8;
+      }
+      h1 {
+        color: #1a202c;
+      }
+      .card {
+        background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: 0 16px 34px rgba(59, 130, 246, 0.08);
+      }
+      .detail-grid {
+        display: grid;
+        grid-template-columns: minmax(220px, 320px) 1fr;
+        gap: 24px;
+        align-items: start;
+      }
+      .product-photo {
+        width: 100%;
+        border-radius: 18px;
+        object-fit: cover;
+        aspect-ratio: 4 / 3;
+        border: 1px solid #e2e8f0;
+      }
+      .meta {
+        display: grid;
+        gap: 14px;
+      }
+      .meta p {
+        margin: 0;
+        color: #334155;
+      }
+      .badge {
+        display: inline-flex;
+        background: #eff6ff;
+        color: #2563eb;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 0.9rem;
+      }
+      .back-link {
+        display: inline-block;
+        background: #2563eb;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 12px;
+        text-decoration: none;
+      }
+      .price {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #276749;
+      }
+      .stock {
+        margin: 14px 0;
+        font-size: 1rem;
+      }
+      .low {
+        color: #c53030;
+        font-weight: bold;
+      }
+      nav a {
+        margin-right: 16px;
+        color: #2b6cb0;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/sales/products/">Products</a>
+      <a href="/sales/orders/">Orders</a>
+      <a href="/sales/orders/mine/">My Orders</a>
+      <a href="/sales/orders/new/">＋ New Order</a>
+    </nav>
+
+    <div class="card">
+      <div class="detail-grid">
+        <img
+          class="product-photo"
+          src="{{ product.image_url|default:'https://via.placeholder.com/400x300?text=No+Image' }}"
+          alt="{{ product.name }}"
+        />
+
+        <div class="meta">
+          <h1>{{ product.name }}</h1>
+          <p class="price">${{ product.price }}</p>
+          <p>{{ product.get_category_display }}</p>
+          <p class="stock">
+            {% if product.stock == 0 %}
+            <span class="low">🚫 This product is out of stock.</span>
+            {% elif product.stock <= 5 %}
+            <span class="low"
+              >⚠️ Low stock: {{ product.stock }} remaining.</span
+            >
+            {% else %}
+            <span>In stock: {{ product.stock }}</span>
+            {% endif %}
+          </p>
+          {% if product.barcode %}
+          <p>Barcode: {{ product.barcode }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
