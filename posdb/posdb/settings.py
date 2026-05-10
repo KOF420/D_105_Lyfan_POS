@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-50bm(p)=b8)!qq*v+-h0&1)$q!!-4imj$x^_h1p!!5d&v3sis&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['Soklyfan.pythonanywhere.com', 'localhost','127.0.0.1']
 
 
 # Application definition
@@ -121,6 +121,12 @@ STATIC_URL = 'static/'
 
 LOGIN_REDIRECT_URL  = '/sales/products/'   # after login → product catalogue
 LOGOUT_REDIRECT_URL = '/accounts/login/'   # after logout → back to login page
+
+CSRF_TRUSTED_ORIGIN = [
+    'https://www.pythonanywhere.com/user/Soklyfan/',
+    'https://www.pythonanywhere.com/user/Soklyfan/'
+
+]    
 
 # With these settings + the root RedirectView, the full navigation cycle is:
 #   /  →  /accounts/login/  →  (log in)  →  /sales/products/
